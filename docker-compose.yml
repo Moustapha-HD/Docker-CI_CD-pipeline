@@ -1,0 +1,51 @@
+version: "3.9"
+services:
+  fastapi:
+    image: datascientest/fastapi:1.0.0
+    container_name: fastapi_container
+    networks:
+      - my_network_from_compose
+    ports:
+      - target: 8000
+        published: 8000
+        protocol: tcp
+        mode: host
+
+  authentification:
+    image: authentification_image
+    container_name: authentification_container
+    networks:
+      - my_network_from_compose
+    volumes:
+      - /authentification
+    depends_on:
+      - fastapi
+    environment:
+      - LOG=1
+  authorization:
+    image: authorization_image
+    container_name: authorization_container
+    networks:
+      - my_network_from_compose
+    volumes:
+      - /authorization
+    depends_on:
+      - fastapi
+    environment:
+      - LOG=1
+
+  content:
+    image: content_image
+    container_name: content_container
+    networks:
+      - my_network_from_compose
+    volumes:
+      - /content
+    depends_on:
+      - fastapi
+    environment:
+      - LOG=1
+
+networks:
+  my_network_from_compose:
+
